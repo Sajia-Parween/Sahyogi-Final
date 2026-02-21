@@ -1,0 +1,91 @@
+from fastapi import APIRouter
+from pydantic import BaseModel
+from datetime import datetime
+from pathlib import Path
+
+from app.services.supabase_service import (
+    get_farmer_by_phone,
+    get_soil_by_farmer_id
+)
+from app.core.advice_engine import generate_full_advice
+from app.ai.gemini_chat import chat_with_context
+from app.ai.tts import generate_audio
+from app.models.api_response import success_response, error_response
+
+
+router = APIRouter()
+
+BASE_DIR = Path(__file__).resolve().parents[4]
+MARKET_FILE = BASE_DIR / "data" / "market_prices" / "wheat_prices.csv"
+
+
+class ChatRequest(BaseModel):
+    phone: str
+    question: str
+
+
+@router.post("/")
+def chat_with_farmer(request: ChatRequest):
+
+    # 1️⃣ Fetch farmer
+    farmer = get_farmer_by_phone(request.phone)
+
+    if not farmer:
+        return error_response(
+            message="Farmer not found",
+            error="not_found",
+            status_code=404
+        )
+
+    # 2️⃣ Fetch soil data
+    soil = get_soil_by_farmer_id(farmer["id"])
+
+    soil_data = {
+        "nitrogen": soil.get("nitrogen") if soil else None,
+        "phosphorus": soil.get("phosphorus") if soil else None,
+        "potassium": soil.get("potassium") if soil else None,
+        "ph": soil.get("ph") if soil else None,
+    }
+
+    # 3️⃣ Convert sowing date
+    sowing_date = datetime.strptime(
+        farmer["sowing_date"], "%Y-%m-%d"
+    ).date()
+
+    # 4️⃣ Generate structured advisory
+    structured_advice = generate_full_advice(
+        crop=farmer["crop"],
+        sowing_date=sowing_date,
+        soil_data=soil_data,
+        market_file_path=str(MARKET_FILE)
+    )
+
+    # 5️⃣ AI Chat Response
+    language = farmer.get("language", "en")
+
+    response_text = chat_with_context(
+        structured_advice=structured_advice,
+        question=request.question,
+        language=language
+    )
+
+    # 6️⃣ Generate Audio (non-blocking — chat works even if TTS fails)
+    audio_url = None
+    try:
+        audio_path = generate_audio(response_text, language)
+        if audio_path:
+            filename = Path(audio_path).name
+            audio_url = f"/api/v1/audio/{filename}"
+    except Exception as e:
+        print(f"Audio generation failed: {str(e)}")
+
+    # 7️⃣ Clean API Response
+    return success_response(
+        message="Chat response generated successfully",
+        data={
+            "farmer": farmer["name"],
+            "question": request.question,
+            "text_response": response_text,
+            "audio_file": audio_url
+        }
+    )
