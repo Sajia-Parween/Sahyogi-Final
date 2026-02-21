@@ -1,0 +1,6 @@
+{
+  "include": ["sahyogi-backend/backend"],
+  "venvPath": ".",
+  "venv": "venv",
+  "pythonVersion": "3.11"
+}
