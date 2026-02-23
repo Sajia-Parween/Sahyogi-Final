@@ -160,7 +160,7 @@ export function useIVR() {
     const goToChat = useCallback(() => {
         stopAudio();
         setState("chat");
-        speak("AI Chat Assistant. Please type your question and press enter.");
+        speak("AI Chat Assistant. Please type or speak your question.");
     }, [stopAudio]);
 
     // Navigate to simulation (with voice prompt)

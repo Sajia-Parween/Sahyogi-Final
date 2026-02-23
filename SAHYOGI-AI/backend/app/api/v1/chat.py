@@ -8,6 +8,7 @@ from app.services.supabase_service import (
     get_soil_by_farmer_id
 )
 from app.core.advice_engine import generate_full_advice
+from app.core.market_projection import generate_market_projection
 from app.ai.gemini_chat import chat_with_context
 from app.ai.tts import generate_audio
 from app.models.api_response import success_response, error_response
@@ -60,16 +61,33 @@ def chat_with_farmer(request: ChatRequest):
         market_file_path=str(MARKET_FILE)
     )
 
-    # 5️⃣ AI Chat Response
+    # 5️⃣ Generate market projection data for richer context
+    market_data = None
+    try:
+        market_data = generate_market_projection(str(MARKET_FILE))
+    except Exception as e:
+        print(f"Market projection failed (non-critical): {e}")
+
+    # 6️⃣ Farmer info for personalization
+    farmer_info = {
+        "name": farmer.get("name", "N/A"),
+        "crop": farmer.get("crop", "N/A"),
+        "district": farmer.get("district", "N/A"),
+        "sowing_date": farmer.get("sowing_date", "N/A"),
+    }
+
+    # 7️⃣ AI Chat Response with enriched context
     language = farmer.get("language", "en")
 
     response_text = chat_with_context(
         structured_advice=structured_advice,
         question=request.question,
-        language=language
+        language=language,
+        market_data=market_data,
+        farmer_info=farmer_info,
     )
 
-    # 6️⃣ Generate Audio (non-blocking — chat works even if TTS fails)
+    # 8️⃣ Generate Audio (non-blocking — chat works even if TTS fails)
     audio_url = None
     try:
         audio_path = generate_audio(response_text, language)
@@ -79,7 +97,7 @@ def chat_with_farmer(request: ChatRequest):
     except Exception as e:
         print(f"Audio generation failed: {str(e)}")
 
-    # 7️⃣ Clean API Response
+    # 9️⃣ Clean API Response
     return success_response(
         message="Chat response generated successfully",
         data={
@@ -89,3 +107,4 @@ def chat_with_farmer(request: ChatRequest):
             "audio_file": audio_url
         }
     )
+
