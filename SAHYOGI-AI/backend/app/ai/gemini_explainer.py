@@ -14,6 +14,13 @@ if GEMINI_API_KEY:
         client = None
 
 
+LANGUAGE_NAMES = {
+    "en": "English",
+    "hi": "Hindi (हिन्दी)",
+    "or": "Odia (ଓଡ଼ିଆ)",
+}
+
+
 def enhance_advisory(structured_advice: dict, language: str = "en") -> Optional[str]:
     """
     Enhances structured advisory using Gemini.
@@ -24,6 +31,9 @@ def enhance_advisory(structured_advice: dict, language: str = "en") -> Optional[
     # 🚨 If client not initialized, skip enhancement
     if not client:
         return None
+
+    # Resolve full language name for clear Gemini instructions
+    lang_name = LANGUAGE_NAMES.get(language, "English")
 
     try:
         crop_stage = structured_advice.get("crop_stage")
@@ -42,7 +52,7 @@ Farmer data:
 - Market trend: {market_trend}
 - Market advice: {market_advice}
 
-Language: {language}
+You MUST respond entirely in {lang_name}. Use the native script of that language.
 
 Generate a practical, easy-to-understand advisory message.
 Keep it structured and farmer-friendly.
@@ -57,7 +67,8 @@ Do not use markdown formatting.
         if not response or not response.text:
             return None
 
-        return response.text.strip()
+        clean_text = response.text.strip().replace("*", "").replace("#", "")
+        return clean_text
 
     except Exception as e:
         # 🚨 NEVER crash backend because of Gemini

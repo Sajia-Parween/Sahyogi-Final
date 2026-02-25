@@ -16,7 +16,7 @@ def generate_audio(text: str, language: str, max_retries: int = 3) -> Optional[s
     LANGUAGE_MAP = {
         "en": "en",
         "hi": "hi",
-        "or": "hi"  # fallback to Hindi voice for Odia
+        "or": "hi"  # gTTS doesn't support Odia — fallback to Hindi voice
     }
 
     tts_lang = LANGUAGE_MAP.get(language, "en")

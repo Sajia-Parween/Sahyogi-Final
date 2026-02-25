@@ -1,41 +1,48 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useFarmer } from "../../../context/FarmerContext";
-import { useAdvice } from "../../../hooks/useAdvice";
+import { getMarketPrices } from "../../../services/api";
+
+interface CropPrice {
+  crop: string;
+  price: number;
+  previous_price: number;
+  daily_change_percent: number;
+  trend: string;
+  projection_7d_percent: number;
+  unit: string;
+}
 
 export default function MarketCard() {
-  const { phone, farmer } = useFarmer();
-  const { data, loading, fetchAdvice } = useAdvice();
+  const [crops, setCrops] = useState<CropPrice[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (phone) fetchAdvice(phone);
-  }, [phone, fetchAdvice]);
+    async function fetchPrices() {
+      try {
+        const res = await getMarketPrices();
+        setCrops(res.crops || []);
+      } catch {
+        // Fallback to empty — will show placeholders
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchPrices();
+    // Refresh every 5 minutes
+    const interval = setInterval(fetchPrices, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
 
-  // Extract market data from structured advice if available
-  const structured = data?.structured;
-  const marketTrend = structured?.market_trend;
-  const marketPrice = structured?.market_price;
-
-  // Build market data — real data if available, else fallback
-  const marketData = marketPrice
-    ? [
-      {
-        crop: farmer?.crop || "Wheat",
-        price: typeof marketPrice === "number"
-          ? marketPrice.toLocaleString()
-          : String(marketPrice),
-        status: marketTrend?.toLowerCase()?.includes("up") ? "up" : "down",
-        change: marketTrend?.toLowerCase()?.includes("up") ? "+12" : "-05",
-        color: marketTrend?.toLowerCase()?.includes("up")
-          ? "text-green-600"
-          : "text-red-500",
-      },
-    ]
+  // Fallback data if API call fails
+  const marketData: CropPrice[] = crops.length > 0
+    ? crops
     : [
-      { crop: "Wheat", price: "2,150", status: "up", change: "+12", color: "text-green-600" },
-      { crop: "Rice", price: "3,150", status: "down", change: "-05", color: "text-red-500" },
-      { crop: "Maize", price: "1,980", status: "up", change: "+08", color: "text-green-600" },
+      { crop: "Wheat", price: 2450, previous_price: 2420, daily_change_percent: 1.2, trend: "rising", projection_7d_percent: 3.0, unit: "Per Quintal" },
+      { crop: "Rice", price: 2350, previous_price: 2340, daily_change_percent: 0.4, trend: "rising", projection_7d_percent: 1.5, unit: "Per Quintal" },
+      { crop: "Maize", price: 2100, previous_price: 2080, daily_change_percent: 1.0, trend: "rising", projection_7d_percent: 2.1, unit: "Per Quintal" },
+      { crop: "Cotton", price: 7200, previous_price: 7150, daily_change_percent: 0.7, trend: "stable", projection_7d_percent: 0.5, unit: "Per Quintal" },
+      { crop: "Sugarcane", price: 340, previous_price: 338, daily_change_percent: 0.6, trend: "rising", projection_7d_percent: 1.0, unit: "Per Quintal" },
     ];
 
   const getEmoji = (crop: string) => {
@@ -44,14 +51,23 @@ export default function MarketCard() {
     if (lower.includes("rice")) return "🍚";
     if (lower.includes("maize") || lower.includes("corn")) return "🌽";
     if (lower.includes("cotton")) return "🏵️";
+    if (lower.includes("sugarcane")) return "🎋";
     if (lower.includes("soybean") || lower.includes("soy")) return "🫘";
     return "🌿";
+  };
+
+  const getTrendBadge = (trend: string) => {
+    if (trend === "rising")
+      return <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-700">📈 Rising</span>;
+    if (trend === "falling")
+      return <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-600">📉 Falling</span>;
+    return <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">➡️ Stable</span>;
   };
 
   return (
     <div className="bg-white/90 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-2xl border border-gray-100 h-full">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
           <div className="bg-[#2D5A27] p-3 rounded-2xl shadow-lg">
             <span className="text-xl text-white">📊</span>
@@ -68,45 +84,50 @@ export default function MarketCard() {
         </span>
       </div>
 
-      {/* Market Trend from advice */}
-      {marketTrend && (
-        <div className="bg-gray-50/50 p-3 rounded-2xl border border-gray-100 mb-4">
-          <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Market Trend</p>
-          <p className="text-sm font-bold text-gray-800 mt-1">{marketTrend}</p>
-        </div>
-      )}
+      {/* Price List */}
+      <div className="space-y-3">
+        {marketData.map((item, index) => {
+          const changePercent = item.daily_change_percent;
+          const isUp = changePercent > 0;
+          const isDown = changePercent < 0;
+          const changeColor = isUp ? "text-green-600" : isDown ? "text-red-500" : "text-gray-500";
+          const changeArrow = isUp ? "▲" : isDown ? "▼" : "→";
 
-      {/* Price List Frame */}
-      <div className="space-y-4">
-        {marketData.map((item, index) => (
-          <div
-            key={index}
-            className="flex items-center justify-between p-4 rounded-2xl bg-gray-50/50 border border-gray-100 hover:border-green-200 transition-all"
-          >
-            {/* Left Side: Icon & Name */}
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm">
-                <span className="text-lg">{getEmoji(item.crop)}</span>
+          return (
+            <div
+              key={index}
+              className="flex items-center justify-between p-4 rounded-2xl bg-gray-50/50 border border-gray-100 hover:border-green-200 transition-all"
+            >
+              {/* Left: Icon, Name, Trend Badge */}
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm">
+                  <span className="text-lg">{getEmoji(item.crop)}</span>
+                </div>
+                <div>
+                  <p className="text-sm font-black text-gray-800 uppercase tracking-tight">{item.crop}</p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase">{item.unit}</p>
+                    {getTrendBadge(item.trend)}
+                  </div>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-black text-gray-800 uppercase tracking-tight">{item.crop}</p>
-                <p className="text-[10px] font-bold text-gray-400 uppercase">Per Quintal</p>
+
+              {/* Right: Price & Change */}
+              <div className="text-right">
+                <p className="text-lg font-black text-gray-900 leading-none">
+                  ₹{item.price.toLocaleString("en-IN")}
+                </p>
+                <p className={`text-[10px] font-black mt-1 ${changeColor}`}>
+                  {changeArrow} {isUp ? "+" : ""}{changePercent.toFixed(1)}%
+                </p>
               </div>
             </div>
-
-            {/* Right Side: Price & Trend */}
-            <div className="text-right">
-              <p className="text-lg font-black text-gray-900 leading-none">₹{item.price}</p>
-              <p className={`text-[10px] font-black mt-1 ${item.color}`}>
-                {item.status === "up" ? "▲" : "▼"} {item.change}
-              </p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Action Area */}
-      <button suppressHydrationWarning className="w-full mt-6 py-4 rounded-2xl bg-gray-900 hover:bg-[#2D5A27] text-white text-xs font-black uppercase tracking-[0.2em] transition-all shadow-xl active:scale-95">
+      <button suppressHydrationWarning className="w-full mt-5 py-4 rounded-2xl bg-gray-900 hover:bg-[#2D5A27] text-white text-xs font-black uppercase tracking-[0.2em] transition-all shadow-xl active:scale-95">
         View Full Market Insights
       </button>
     </div>

@@ -48,6 +48,12 @@ export async function getAnalyticsSummary() {
   return res.data;
 }
 
+// ─── Market Prices ───
+export async function getMarketPrices() {
+  const res = await api.get("/api/v1/market-prices/all");
+  return res.data;
+}
+
 // ─── Audio URL builder ───
 export function getAudioUrl(path: string) {
   if (path.startsWith("http")) return path;

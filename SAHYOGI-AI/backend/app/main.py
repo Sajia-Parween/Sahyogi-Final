@@ -8,6 +8,7 @@ from app.api.v1 import chat
 from app.api.v1 import simulation
 from app.api.v1 import disease
 from app.api.v1 import calendar
+from app.api.v1 import market_prices
 from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(
@@ -42,3 +43,4 @@ app.include_router(chat.router, prefix="/api/v1/chat", tags=["Chat"])
 app.include_router(simulation.router, prefix="/api/v1/simulate-sell", tags=["Simulation"])
 app.include_router(disease.router, prefix="/api/v1/disease", tags=["Disease Detection"])
 app.include_router(calendar.router, prefix="/api/v1/calendar", tags=["Crop Calendar"])
+app.include_router(market_prices.router, prefix="/api/v1/market-prices", tags=["Market Prices"])

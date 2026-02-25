@@ -110,13 +110,14 @@ def simulate_call(request: CallRequest):
         narrative = enhanced_text
 
     # 🔹 1️⃣2️⃣ Generate Audio
-    audio_path = generate_audio(
-        narrative,
-        language
-    )
-
-    filename = Path(audio_path).name
-    audio_url = f"/api/v1/audio/{filename}"
+    audio_url = None
+    try:
+        audio_path = generate_audio(narrative, language)
+        if audio_path:
+            filename = Path(audio_path).name
+            audio_url = f"/api/v1/audio/{filename}"
+    except Exception as e:
+        print(f"Audio generation failed: {str(e)}")
 
     # 🔹 1️⃣3️⃣ Log Call
     log_call(

@@ -27,11 +27,17 @@ def generate_full_advice(
     prices = load_market_prices(market_file_path)
     market_info = analyze_market_trend(prices)
 
-    # 4️⃣ Combine Output
+    # 4️⃣ Current price from data
+    current_price = prices[-1] if prices else None
+
+    # 5️⃣ Combine Output
     return {
         "crop_stage": current_stage,
         "days_since_sowing": crop_info["days_since_sowing"],
         "soil_advice": soil_advice,
         "market_trend": market_info["trend"],
-        "market_advice": market_info["advice"]
+        "market_advice": market_info["advice"],
+        "market_price": current_price,
+        "trend_strength": market_info.get("trend_strength", 0),
+        "momentum_7d": market_info.get("momentum_7d", 0),
     }

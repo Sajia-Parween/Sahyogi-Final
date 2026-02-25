@@ -15,7 +15,17 @@ router = APIRouter()
 
 # Resolve base directory safely
 BASE_DIR = Path(__file__).resolve().parents[4]
-MARKET_FILE = BASE_DIR / "data" / "market_prices" / "wheat_prices.csv"
+MARKET_DIR = BASE_DIR / "data" / "market_prices"
+
+
+def get_market_file(crop: str) -> str:
+    """Resolve market CSV path dynamically based on crop."""
+    crop_lower = crop.lower().strip()
+    crop_file = MARKET_DIR / f"{crop_lower}_prices.csv"
+    if crop_file.exists():
+        return str(crop_file)
+    # Fallback to wheat
+    return str(MARKET_DIR / "wheat_prices.csv")
 
 
 @router.get("/{phone}")
@@ -39,11 +49,13 @@ def get_advice(phone: str):
         farmer["sowing_date"], "%Y-%m-%d"
     ).date()
 
+    market_file = get_market_file(farmer["crop"])
+
     structured_advice = generate_full_advice(
         crop=farmer["crop"],
         sowing_date=sowing_date,
         soil_data=soil_data,
-        market_file_path=str(MARKET_FILE)
+        market_file_path=market_file
     )
 
     narrative = format_advice_response(
@@ -58,7 +70,7 @@ def get_advice(phone: str):
     })
 
 
-# 🔊 NEW AUDIO ENDPOINT
+# 🔊 AUDIO ENDPOINT
 @router.get("/{phone}/audio")
 def get_advice_audio(phone: str):
 
@@ -80,11 +92,13 @@ def get_advice_audio(phone: str):
         farmer["sowing_date"], "%Y-%m-%d"
     ).date()
 
+    market_file = get_market_file(farmer["crop"])
+
     structured_advice = generate_full_advice(
         crop=farmer["crop"],
         sowing_date=sowing_date,
         soil_data=soil_data,
-        market_file_path=str(MARKET_FILE)
+        market_file_path=market_file
     )
 
     narrative = format_advice_response(

@@ -134,6 +134,13 @@ AGRI_KNOWLEDGE = """
 """
 
 
+LANGUAGE_NAMES = {
+    "en": "English",
+    "hi": "Hindi (हिन्दी)",
+    "or": "Odia (ଓଡ଼ିଆ)",
+}
+
+
 def chat_with_context(
     structured_advice: dict,
     question: str,
@@ -141,6 +148,9 @@ def chat_with_context(
     market_data: dict | None = None,
     farmer_info: dict | None = None,
 ):
+
+    # Resolve full language name for clear Gemini instructions
+    lang_name = LANGUAGE_NAMES.get(language, "English")
 
     # Build farmer context section
     farmer_context = ""
@@ -187,10 +197,11 @@ INSTRUCTIONS:
 1. Use the farmer-specific data above to personalize your response.
 2. Use the agricultural knowledge base to answer general questions about MSP, schemes, fertilizers, diseases, pests, irrigation, storage, etc.
 3. When discussing prices, always reference the actual market data provided above.
-4. Respond clearly and simply in {language}. Use practical, action-oriented language.
+4. You MUST respond entirely in {lang_name}. Use the native script of that language. Use practical, action-oriented language.
 5. If the farmer asks about MSP, provide the exact MSP rate from the knowledge base.
 6. If asked about government schemes, explain eligibility, benefits, and how to apply.
 7. Keep responses concise but informative. Use bullet points where helpful.
+8. Do NOT use any markdown formatting like *, **, #, or backticks. Use plain text only.
 
 Farmer's Question: {question}
 """
@@ -200,4 +211,6 @@ Farmer's Question: {question}
         contents=context_prompt
     )
 
-    return response.text
+    # Strip any markdown formatting characters
+    clean_text = response.text.replace("*", "").replace("#", "")
+    return clean_text
