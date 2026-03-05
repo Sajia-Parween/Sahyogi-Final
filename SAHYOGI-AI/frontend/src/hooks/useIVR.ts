@@ -1,14 +1,15 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
-import { simulateCall, sendChatMessage, simulateSell, getAudioUrl } from "../services/api";
+import { simulateCall, sendChatMessage, simulateSell, getAudioUrl, getPacsQueue, bookPacsSlot } from "../services/api";
 
-export type IVRState = "idle" | "calling" | "menu" | "advisory" | "market" | "chat" | "simulation";
+export type IVRState = "idle" | "calling" | "menu" | "advisory" | "market" | "chat" | "simulation" | "pacs";
 
 export interface IVRData {
     callData: Record<string, any> | null;
     chatResponse: { text: string; audioUrl?: string } | null;
     simulationData: Record<string, any> | null;
+    pacsData: Record<string, any> | null;
 }
 
 // ─── TTS Helper ───
@@ -46,6 +47,7 @@ const MENU_PROMPT =
     "Press 2 for Market Prices. " +
     "Press 3 for AI Chat Assistant. " +
     "Press 4 for Sell Simulation. " +
+    "Press 5 for PACS Queue and Slot Booking. " +
     "Press 0 to repeat this menu.";
 
 export function useIVR() {
@@ -57,6 +59,7 @@ export function useIVR() {
         callData: null,
         chatResponse: null,
         simulationData: null,
+        pacsData: null,
     });
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -170,6 +173,63 @@ export function useIVR() {
         speak("Sell Simulation. Adjust the number of days and press the simulate button.");
     }, [stopAudio]);
 
+    // Navigate to PACS (with voice prompt + fetch queue)
+    const goToPacs = useCallback(async () => {
+        stopAudio();
+        setState("pacs");
+        speak("PACS Queue Status. Fetching queue information.");
+        try {
+            const res = await getPacsQueue("pacs_001");
+            const pacsData = res?.data || res;
+            setData((prev) => ({ ...prev, pacsData }));
+            if (pacsData) {
+                const text =
+                    `PACS Queue update for ${pacsData.pacs_name || "Sambalpur Central PACS"}. ` +
+                    `Currently ${pacsData.current_queue} people in the queue. ` +
+                    `Estimated wait time is ${pacsData.estimated_wait_minutes} minutes. ` +
+                    `There are ${pacsData.available_slots?.length || 0} slots available for booking today. ` +
+                    `You can book a slot right now by selecting a service and time.`;
+                speak(text);
+            }
+        } catch {
+            speak("PACS queue information is currently unavailable.");
+        }
+    }, [stopAudio]);
+
+    // Book PACS slot from IVR
+    const bookPacsIvr = useCallback(async (phone: string, service: string, time: string) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const res = await bookPacsSlot("pacs_001", phone, service, time);
+            const result = res?.data || res;
+            if (result?.success || result?.booking) {
+                const token = result?.booking?.token_number || "";
+                const msg = `Your slot has been booked successfully! Your token number is ${token}. ` +
+                    `Service: ${service}. Time: ${time}. Please visit the PACS at your scheduled time.`;
+                speak(msg);
+                // Refresh queue data
+                try {
+                    const qRes = await getPacsQueue("pacs_001");
+                    setData((prev) => ({ ...prev, pacsData: qRes?.data || qRes }));
+                } catch { /* silent */ }
+                return { success: true, message: msg, token };
+            } else {
+                const errMsg = result?.message || "Booking failed. Please try again.";
+                speak(errMsg);
+                setError(errMsg);
+                return { success: false, message: errMsg };
+            }
+        } catch (err: any) {
+            const errMsg = err?.response?.data?.message || "Booking failed. Please try again.";
+            speak(errMsg);
+            setError(errMsg);
+            return { success: false, message: errMsg };
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
     // Option 3: Chat — send message and speak response
     const sendChat = useCallback(async (phone: string, question: string) => {
         setState("chat");
@@ -251,7 +311,7 @@ export function useIVR() {
         stopAudio();
         setState("idle");
         setError(null);
-        setData({ callData: null, chatResponse: null, simulationData: null });
+        setData({ callData: null, chatResponse: null, simulationData: null, pacsData: null });
     }, [stopAudio]);
 
     return {
@@ -268,6 +328,8 @@ export function useIVR() {
         goToChat,
         runSimulation,
         goToSimulation,
+        goToPacs,
+        bookPacsIvr,
         backToMenu,
         resetCall,
         playAudio,

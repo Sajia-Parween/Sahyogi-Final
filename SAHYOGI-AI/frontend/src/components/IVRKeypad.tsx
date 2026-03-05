@@ -10,6 +10,7 @@ const keys = [
     { num: 2, label: "Market Prices", icon: "📊", color: "from-blue-500 to-blue-600" },
     { num: 3, label: "AI Chat", icon: "🤖", color: "from-purple-500 to-purple-600" },
     { num: 4, label: "Sell Simulation", icon: "💰", color: "from-amber-500 to-amber-600" },
+    { num: 5, label: "PACS Queue", icon: "🏛️", color: "from-teal-500 to-teal-600" },
 ];
 
 export default function IVRKeypad({ onPress, disabled }: IVRKeypadProps) {
@@ -22,8 +23,8 @@ export default function IVRKeypad({ onPress, disabled }: IVRKeypadProps) {
                         onClick={() => onPress(key.num)}
                         disabled={disabled}
                         className={`group relative overflow-hidden rounded-2xl p-6 transition-all duration-300 active:scale-95 ${disabled
-                                ? "bg-white/5 cursor-not-allowed opacity-50"
-                                : "bg-white/5 hover:bg-white/10 hover:scale-105 border border-white/10 hover:border-white/20"
+                            ? "bg-white/5 cursor-not-allowed opacity-50"
+                            : "bg-white/5 hover:bg-white/10 hover:scale-105 border border-white/10 hover:border-white/20"
                             }`}
                     >
                         {/* Glow effect on hover */}

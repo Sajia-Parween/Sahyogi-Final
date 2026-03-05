@@ -11,6 +11,7 @@ import SoilCard from "./Dashboard/SoilCard";
 import DiseaseCard from "./Dashboard/DiseaseCard";
 import FarmMapCard from "./Dashboard/FarmMapCard";
 import CropCalendarCard from "./Dashboard/CropCalendarCard";
+import PACSCard from "./Dashboard/PACSCard";
 
 export default function FarmerPage() {
   return (
@@ -80,6 +81,8 @@ export default function FarmerPage() {
 
           <FarmMapCard />
           <CropCalendarCard />
+
+          <PACSCard />
         </div>
       </div>
 

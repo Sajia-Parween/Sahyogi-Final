@@ -60,4 +60,40 @@ export function getAudioUrl(path: string) {
   return `${API_BASE}${path}`;
 }
 
+// ─── PACS Queue & Booking ───
+export async function getPacsList() {
+  const res = await api.get("/api/v1/pacs/");
+  return res.data;
+}
+
+export async function getPacsQueue(pacsId: string) {
+  const res = await api.get(`/api/v1/pacs/${pacsId}/queue`);
+  return res.data;
+}
+
+export async function bookPacsSlot(
+  pacsId: string,
+  phone: string,
+  service: string,
+  preferredTime: string
+) {
+  const res = await api.post("/api/v1/pacs/book", {
+    pacs_id: pacsId,
+    farmer_phone: phone,
+    service: service,
+    preferred_time: preferredTime,
+  });
+  return res.data;
+}
+
+export async function getMyPacsBookings(phone: string) {
+  const res = await api.get(`/api/v1/pacs/bookings/${phone}`);
+  return res.data;
+}
+
+export async function cancelPacsBooking(bookingId: string) {
+  const res = await api.delete(`/api/v1/pacs/bookings/${bookingId}`);
+  return res.data;
+}
+
 export default api;

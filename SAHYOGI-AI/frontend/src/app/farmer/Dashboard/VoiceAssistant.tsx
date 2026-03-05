@@ -52,7 +52,7 @@ export default function VoiceAssistant() {
             <span className="text-xl">🎙️</span>
           </div>
           <h2 className="text-xl font-bold text-gray-800 tracking-tight">
-            Voice Assistant
+            Chat Assistant
           </h2>
         </div>
         {loading && (

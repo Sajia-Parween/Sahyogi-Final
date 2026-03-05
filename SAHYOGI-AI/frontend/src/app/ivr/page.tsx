@@ -30,6 +30,9 @@ export default function IvrPage() {
             case 4:
                 ivr.goToSimulation();
                 break;
+            case 5:
+                ivr.goToPacs();
+                break;
             case 0:
                 ivr.backToMenu();
                 break;
@@ -131,7 +134,7 @@ export default function IvrPage() {
                 )}
 
                 {/* Feature views */}
-                {["advisory", "market", "chat", "simulation"].includes(ivr.state) && (
+                {["advisory", "market", "chat", "simulation", "pacs"].includes(ivr.state) && (
                     <IVRMenu
                         state={ivr.state}
                         data={ivr.data}
@@ -141,6 +144,7 @@ export default function IvrPage() {
                         phone={phone}
                         onSendChat={ivr.sendChat}
                         onRunSimulation={ivr.runSimulation}
+                        onBookPacs={ivr.bookPacsIvr}
                         onBack={ivr.backToMenu}
                         onPlayAudio={ivr.playAudio}
                         onStopAudio={ivr.stopAudio}
