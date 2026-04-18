@@ -147,6 +147,7 @@ def chat_with_context(
     language: str = "en",
     market_data: dict | None = None,
     farmer_info: dict | None = None,
+    platform_data: str = "",
 ):
 
     # Resolve full language name for clear Gemini instructions
@@ -176,9 +177,30 @@ Live Market Data:
 - Price Volatility: ₹{market_data.get('volatility', 'N/A')} std dev
 """
 
-    context_prompt = f"""You are SAHYOGI, an expert AI agricultural assistant for Indian farmers.
+    # Build platform data section
+    platform_section = ""
+    if platform_data:
+        platform_section = f"""
+{platform_data}
+IMPORTANT: The PLATFORM DATA above contains REAL, LIVE data from the Sahyogi system.
+When the farmer asks about requests, connections, buyers, weather, PACS bookings, or any platform feature:
+- ALWAYS use the platform data above to give accurate answers
+- List specific names, crops, quantities, statuses from the data
+- NEVER say "I don't have access" or "I cannot check" — you DO have the data above
+- If the platform data shows connection requests, tell the farmer exactly who sent them, what crop/quantity, and the status
+- If the platform data shows buyers, tell the farmer about available buyers with their details
+"""
+
+    context_prompt = f"""You are SAHYOGI, an expert AI agricultural assistant AND a smart platform assistant for Indian farmers.
 You have deep knowledge of Indian agriculture, government schemes, MSP rates, fertilizers,
 irrigation, pest management, crop diseases, weather advisories, and market analysis.
+
+You ALSO have access to the Sahyogi platform features:
+- Connection Requests: You can see who has sent buying requests to the farmer, and requests the farmer has sent
+- Active Buyers: You can see registered buyers on the platform with their details
+- Live Weather: You have real-time weather data
+- PACS Bookings: You can see the farmer's cooperative bookings
+- Market Prices: You have price data and projections
 
 {AGRI_KNOWLEDGE}
 
@@ -191,6 +213,7 @@ Crop Advisory Data:
 - Market Trend: {structured_advice.get("market_trend")}
 - Market Advice: {structured_advice.get("market_advice")}
 {market_context}
+{platform_section}
 --- END OF DATA ---
 
 INSTRUCTIONS:
@@ -200,14 +223,16 @@ INSTRUCTIONS:
 4. You MUST respond entirely in {lang_name}. Use the native script of that language. Use practical, action-oriented language.
 5. If the farmer asks about MSP, provide the exact MSP rate from the knowledge base.
 6. If asked about government schemes, explain eligibility, benefits, and how to apply.
-7. Keep responses concise but informative. Use bullet points where helpful.
-8. Do NOT use any markdown formatting like *, **, #, or backticks. Use plain text only.
+7. When farmer asks about connections, requests, buyers, or any platform feature — ALWAYS use the PLATFORM DATA section to give specific, accurate answers with names, crops, quantities, and statuses.
+8. Keep responses concise but informative. Use bullet points where helpful.
+9. Do NOT use any markdown formatting like *, **, #, or backticks. Use plain text only.
+10. NEVER say you cannot access data if PLATFORM DATA is provided above. Use it.
 
 Farmer's Question: {question}
 """
 
     response = client.models.generate_content(
-        model="gemini-3-flash-preview",
+        model="gemini-2.5-flash",
         contents=context_prompt
     )
 

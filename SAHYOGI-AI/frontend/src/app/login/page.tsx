@@ -167,6 +167,10 @@ export default function LoginPage() {
             <p className="text-center text-xs text-gray-400 font-medium mt-6">
               By logging in, you agree to our <span className="text-green-600 underline cursor-pointer">Terms of Service</span>
             </p>
+
+            <a href="/buyer/login" className="block text-center text-xs text-emerald-600 font-bold mt-3 hover:text-emerald-700 transition-colors">
+              Are you a buyer? → Buyer Login
+            </a>
           </div>
         </div>
 

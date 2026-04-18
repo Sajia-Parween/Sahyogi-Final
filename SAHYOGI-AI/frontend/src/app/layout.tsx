@@ -1,6 +1,7 @@
 import "./globals.css";
 import { LanguageProvider } from "../context/LanguageContext";
 import { FarmerProvider } from "../context/FarmerContext";
+import { BuyerProvider } from "../context/BuyerContext";
 
 export default function RootLayout({
   children,
@@ -11,9 +12,11 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <FarmerProvider>
-          <LanguageProvider>{children}</LanguageProvider>
+          <BuyerProvider>
+            <LanguageProvider>{children}</LanguageProvider>
+          </BuyerProvider>
         </FarmerProvider>
       </body>
     </html>
   );
-}
+}

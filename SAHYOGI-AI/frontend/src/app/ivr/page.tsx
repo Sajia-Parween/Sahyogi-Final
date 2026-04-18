@@ -33,6 +33,9 @@ export default function IvrPage() {
             case 5:
                 ivr.goToPacs();
                 break;
+            case 6:
+                ivr.goToSupplyIntelligence();
+                break;
             case 0:
                 ivr.backToMenu();
                 break;
@@ -134,7 +137,7 @@ export default function IvrPage() {
                 )}
 
                 {/* Feature views */}
-                {["advisory", "market", "chat", "simulation", "pacs"].includes(ivr.state) && (
+                {["advisory", "market", "chat", "simulation", "pacs", "supply"].includes(ivr.state) && (
                     <IVRMenu
                         state={ivr.state}
                         data={ivr.data}
@@ -145,6 +148,7 @@ export default function IvrPage() {
                         onSendChat={ivr.sendChat}
                         onRunSimulation={ivr.runSimulation}
                         onBookPacs={ivr.bookPacsIvr}
+                        onSendSupplyQuery={ivr.sendSupplyQuery}
                         onBack={ivr.backToMenu}
                         onPlayAudio={ivr.playAudio}
                         onStopAudio={ivr.stopAudio}

@@ -11,6 +11,7 @@ const keys = [
     { num: 3, label: "AI Chat", icon: "🤖", color: "from-purple-500 to-purple-600" },
     { num: 4, label: "Sell Simulation", icon: "💰", color: "from-amber-500 to-amber-600" },
     { num: 5, label: "PACS Queue", icon: "🏛️", color: "from-teal-500 to-teal-600" },
+    { num: 6, label: "Supply AI", icon: "🧠", color: "from-emerald-500 to-emerald-600" },
 ];
 
 export default function IVRKeypad({ onPress, disabled }: IVRKeypadProps) {

@@ -35,14 +35,23 @@ async def detect_crop_disease(
             status_code=400
         )
 
-    # Analyze with Gemini Vision
+    # Analyze with Gemini Vision (includes retry logic)
     result = analyze_crop_disease(image_bytes, language)
 
-    if not result:
+    # result can be: dict (success), str (error message), or None (no client)
+    if result is None:
         return error_response(
-            message="Could not analyze the image. Please try again with a clearer photo.",
+            message="AI service is not configured. Please check your API key.",
+            error="service_unavailable",
+            status_code=503
+        )
+
+    if isinstance(result, str):
+        # User-friendly error message from retry logic
+        return error_response(
+            message=result,
             error="analysis_failed",
-            status_code=500
+            status_code=503
         )
 
     return success_response(

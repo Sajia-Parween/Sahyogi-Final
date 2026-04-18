@@ -15,12 +15,20 @@ export default function Home() {
           </h1>
         </div>
 
-        <Link
-          href="/login"
-          className="bg-[#1A3317] text-white px-6 py-2 rounded-xl font-bold hover:bg-gray-900 transition-all shadow-md active:scale-95"
-        >
-          Login
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/buyer/login"
+            className="bg-emerald-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-emerald-700 transition-all shadow-md active:scale-95"
+          >
+            Buyer Login
+          </Link>
+          <Link
+            href="/login"
+            className="bg-[#1A3317] text-white px-6 py-2 rounded-xl font-bold hover:bg-gray-900 transition-all shadow-md active:scale-95"
+          >
+            Farmer Login
+          </Link>
+        </div>
       </header>
 
       {/* Hero Section */}

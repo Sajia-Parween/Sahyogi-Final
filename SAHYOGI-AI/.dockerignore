@@ -1,0 +1,36 @@
+# ─── Docker Ignore ───
+# Excludes unnecessary files from Docker build context
+
+# Dependencies & build artifacts
+**/node_modules
+**/.next
+**/venv
+**/__pycache__
+**/.pytest_cache
+
+# IDE & OS
+.vscode
+.idea
+*.swp
+*.swo
+Thumbs.db
+.DS_Store
+
+# Git
+.git
+.gitignore
+
+# Docs & scripts (not needed in container)
+docs/
+scripts/
+*.md
+!README.md
+
+# Env files (passed via docker-compose)
+.env
+.env.example
+.env.local
+
+# Audio files (generated at runtime)
+backend/audio/*.mp3
+backend/audio/*.wav

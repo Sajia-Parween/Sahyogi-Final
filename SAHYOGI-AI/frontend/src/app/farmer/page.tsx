@@ -12,6 +12,11 @@ import DiseaseCard from "./Dashboard/DiseaseCard";
 import FarmMapCard from "./Dashboard/FarmMapCard";
 import CropCalendarCard from "./Dashboard/CropCalendarCard";
 import PACSCard from "./Dashboard/PACSCard";
+import SupplyDecisionCard from "./Dashboard/SupplyDecisionCard";
+import FarmerRequestsCard from "./Dashboard/FarmerRequestsCard";
+import SmartAlertsCard from "./Dashboard/SmartAlertsCard";
+import CommunityCard from "./Dashboard/CommunityCard";
+import LoanInsuranceCard from "./Dashboard/LoanInsuranceCard";
 
 export default function FarmerPage() {
   return (
@@ -22,6 +27,11 @@ export default function FarmerPage() {
         {/* Header */}
         <div className="mb-8">
           <Header />
+        </div>
+
+        {/* Smart Alerts — Full Width Priority Banner */}
+        <div className="mb-6 drop-shadow-sm">
+          <SmartAlertsCard />
         </div>
 
         {/* Weather - Full Width */}
@@ -70,6 +80,18 @@ export default function FarmerPage() {
 
         {/* 2 Column Grid for Laptop */}
         <div className="grid grid-cols-2 gap-10">
+          {/* ★ Supply Decision Card — Primary Feature */}
+          <SupplyDecisionCard />
+
+          {/* ★ Connection Request Tracker */}
+          <FarmerRequestsCard />
+
+          {/* ★ NEW: Community Discussion */}
+          <CommunityCard />
+
+          {/* ★ NEW: Loan & Insurance Help */}
+          <LoanInsuranceCard />
+
           <VoiceAssistant />
           <SellCard />
 

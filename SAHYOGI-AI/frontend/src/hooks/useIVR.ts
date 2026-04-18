@@ -1,15 +1,17 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
-import { simulateCall, sendChatMessage, simulateSell, getAudioUrl, getPacsQueue, bookPacsSlot } from "../services/api";
+import { simulateCall, sendChatMessage, simulateSell, getAudioUrl, getPacsQueue, bookPacsSlot, sendIvrQuery } from "../services/api";
 
-export type IVRState = "idle" | "calling" | "menu" | "advisory" | "market" | "chat" | "simulation" | "pacs";
+export type IVRState = "idle" | "calling" | "menu" | "advisory" | "market" | "chat" | "simulation" | "pacs" | "supply";
 
 export interface IVRData {
     callData: Record<string, any> | null;
     chatResponse: { text: string; audioUrl?: string } | null;
     simulationData: Record<string, any> | null;
     pacsData: Record<string, any> | null;
+    supplyData: Record<string, any> | null;
+    supplySession: Record<string, any> | null;
 }
 
 // ─── TTS Helper ───
@@ -48,6 +50,7 @@ const MENU_PROMPT =
     "Press 3 for AI Chat Assistant. " +
     "Press 4 for Sell Simulation. " +
     "Press 5 for PACS Queue and Slot Booking. " +
+    "Press 6 for Supply Intelligence — AI-powered selling advice. " +
     "Press 0 to repeat this menu.";
 
 export function useIVR() {
@@ -60,6 +63,8 @@ export function useIVR() {
         chatResponse: null,
         simulationData: null,
         pacsData: null,
+        supplyData: null,
+        supplySession: null,
     });
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -196,6 +201,47 @@ export function useIVR() {
         }
     }, [stopAudio]);
 
+    // Navigate to Supply Intelligence (with voice prompt)
+    const goToSupplyIntelligence = useCallback(() => {
+        stopAudio();
+        setState("supply");
+        setData((prev) => ({ ...prev, supplyData: null, supplySession: null }));
+        speak(
+            "Supply Intelligence. Tell me what you want to sell. " +
+            "For example, say: Where should I sell 100 kg tomato?"
+        );
+    }, [stopAudio]);
+
+    // Send conversational supply query
+    const sendSupplyQuery = useCallback(async (text: string) => {
+        setState("supply");
+        setLoading(true);
+        setError(null);
+
+        try {
+            const sessionData = data.supplySession || {};
+            const res = await sendIvrQuery(text, sessionData);
+            const result = res?.data || res;
+
+            setData((prev) => ({
+                ...prev,
+                supplyData: result,
+                supplySession: result?.extracted_entities || sessionData,
+            }));
+
+            // Speak the simple response
+            if (result?.response_text) {
+                speak(result.response_text);
+            }
+        } catch (err: any) {
+            setError(
+                err?.response?.data?.message || err.message || "Supply query failed"
+            );
+        } finally {
+            setLoading(false);
+        }
+    }, [data.supplySession]);
+
     // Book PACS slot from IVR
     const bookPacsIvr = useCallback(async (phone: string, service: string, time: string) => {
         setLoading(true);
@@ -311,7 +357,7 @@ export function useIVR() {
         stopAudio();
         setState("idle");
         setError(null);
-        setData({ callData: null, chatResponse: null, simulationData: null, pacsData: null });
+        setData({ callData: null, chatResponse: null, simulationData: null, pacsData: null, supplyData: null, supplySession: null });
     }, [stopAudio]);
 
     return {
@@ -330,6 +376,8 @@ export function useIVR() {
         goToSimulation,
         goToPacs,
         bookPacsIvr,
+        goToSupplyIntelligence,
+        sendSupplyQuery,
         backToMenu,
         resetCall,
         playAudio,

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = "http://localhost:8001";
 
 const api = axios.create({
   baseURL: API_BASE,
@@ -93,6 +93,131 @@ export async function getMyPacsBookings(phone: string) {
 
 export async function cancelPacsBooking(bookingId: string) {
   const res = await api.delete(`/api/v1/pacs/bookings/${bookingId}`);
+  return res.data;
+}
+
+// ─── Supply Intelligence ───
+export async function getSupplyPrices(crop: string, location: string) {
+  const res = await api.get(`/api/v1/supply/prices`, {
+    params: { crop, location },
+  });
+  return res.data;
+}
+
+export async function getSupplyDemand(crop: string) {
+  const res = await api.get(`/api/v1/supply/demand`, {
+    params: { crop },
+  });
+  return res.data;
+}
+
+export async function getPricePrediction(crop: string) {
+  const res = await api.get(`/api/v1/supply/predict`, {
+    params: { crop },
+  });
+  return res.data;
+}
+
+export async function getSellingRecommendation(payload: {
+  crop: string;
+  quantity: number;
+  location: string;
+  storage_available: boolean;
+}) {
+  const res = await api.post("/api/v1/supply/recommend", payload);
+  return res.data;
+}
+
+// ─── IVR Intelligence ───
+export async function sendIvrQuery(text: string, sessionData?: Record<string, any>) {
+  const res = await api.post("/api/v1/ivr-intelligence/query", {
+    text,
+    session_data: sessionData || null,
+  });
+  return res.data;
+}
+
+// ─── Buyer APIs ───
+export async function registerBuyer(data: {
+  phone: string;
+  name: string;
+  business_name?: string;
+  email?: string;
+  location?: string;
+  crops_buying?: string[];
+  price_range?: { min: number; max: number };
+  max_quantity_kg?: number;
+  payment_speed?: string;
+  business_type?: string;
+  description?: string;
+}) {
+  const res = await api.post("/api/v1/buyer/register", data);
+  return res.data;
+}
+
+export async function loginBuyer(phone: string) {
+  const res = await api.get(`/api/v1/buyer/login/${phone}`);
+  return res.data;
+}
+
+export async function getBuyerProfile(phone: string) {
+  const res = await api.get(`/api/v1/buyer/profile/${phone}`);
+  return res.data;
+}
+
+export async function updateBuyerListing(phone: string, updates: Record<string, any>) {
+  const res = await api.put(`/api/v1/buyer/profile/${phone}`, updates);
+  return res.data;
+}
+
+export async function discoverBuyers(crop?: string, location?: string) {
+  const res = await api.get("/api/v1/buyer/discover", {
+    params: { crop: crop || undefined, location: location || undefined },
+  });
+  return res.data;
+}
+
+export async function sendConnectionRequest(data: {
+  farmer_phone: string;
+  farmer_name: string;
+  buyer_phone: string;
+  crop: string;
+  quantity: number;
+  message?: string;
+  direction?: string;
+}) {
+  const res = await api.post("/api/v1/buyer/connect", data);
+  return res.data;
+}
+
+export async function getBuyerRequests(buyerPhone: string, status?: string) {
+  const res = await api.get(`/api/v1/buyer/requests/${buyerPhone}`, {
+    params: { status: status || undefined },
+  });
+  return res.data;
+}
+
+export async function getFarmerConnectionRequests(farmerPhone: string) {
+  const res = await api.get(`/api/v1/buyer/farmer-requests/${farmerPhone}`);
+  return res.data;
+}
+
+export async function respondToConnection(data: {
+  request_id: string;
+  accept: boolean;
+  response_message?: string;
+}) {
+  const res = await api.post("/api/v1/buyer/respond", data);
+  return res.data;
+}
+
+export async function getBuyerAnalytics(buyerPhone: string) {
+  const res = await api.get(`/api/v1/buyer/analytics/${buyerPhone}`);
+  return res.data;
+}
+
+export async function discoverFarmers() {
+  const res = await api.get("/api/v1/buyer/farmers");
   return res.data;
 }
 

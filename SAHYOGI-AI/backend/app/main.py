@@ -7,9 +7,13 @@ from app.api.v1 import analytics
 from app.api.v1 import chat
 from app.api.v1 import simulation
 from app.api.v1 import pacs
+from app.api.v1 import supply
+from app.api.v1 import ivr
+from app.api.v1 import buyer
 from app.api.v1 import disease
 from app.api.v1 import calendar
 from app.api.v1 import market_prices
+from app.api.v1 import community
 from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(
@@ -46,3 +50,7 @@ app.include_router(disease.router, prefix="/api/v1/disease", tags=["Disease Dete
 app.include_router(calendar.router, prefix="/api/v1/calendar", tags=["Crop Calendar"])
 app.include_router(market_prices.router, prefix="/api/v1/market-prices", tags=["Market Prices"])
 app.include_router(pacs.router, prefix="/api/v1/pacs", tags=["PACS"])
+app.include_router(supply.router, prefix="/api/v1/supply", tags=["Supply Intelligence"])
+app.include_router(ivr.router, prefix="/api/v1/ivr-intelligence", tags=["IVR Intelligence"])
+app.include_router(buyer.router, prefix="/api/v1/buyer", tags=["Buyer"])
+app.include_router(community.router, prefix="/api/v1/community", tags=["Community"])

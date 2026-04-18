@@ -14,6 +14,7 @@ interface IVRMenuProps {
     onSendChat: (phone: string, question: string) => void;
     onRunSimulation: (phone: string, days: number) => void;
     onBookPacs?: (phone: string, service: string, time: string) => Promise<any>;
+    onSendSupplyQuery?: (text: string) => void;
     onBack: () => void;
     onPlayAudio: (url: string) => void;
     onStopAudio: () => void;
@@ -29,6 +30,7 @@ export default function IVRMenu({
     onSendChat,
     onRunSimulation,
     onBookPacs,
+    onSendSupplyQuery,
     onBack,
     onPlayAudio,
     onStopAudio,
@@ -38,6 +40,9 @@ export default function IVRMenu({
     const [pacsService, setPacsService] = useState("");
     const [pacsTime, setPacsTime] = useState("");
     const [pacsConfirm, setPacsConfirm] = useState<string | null>(null);
+    const [supplyInput, setSupplyInput] = useState("");
+    const [showSupplyDetail, setShowSupplyDetail] = useState(false);
+    const [supplyBuyerToast, setSupplyBuyerToast] = useState(false);
 
     // ─── Advisory View ───
     if (state === "advisory") {
@@ -497,6 +502,189 @@ export default function IVRMenu({
                     <div className="flex flex-col items-center gap-4 py-8">
                         <div className="w-8 h-8 border-2 border-teal-400/30 border-t-teal-400 rounded-full animate-spin" />
                         <p className="text-white/40 text-sm">Fetching queue status...</p>
+                    </div>
+                )}
+
+                {error && (
+                    <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 text-red-400 text-sm font-medium">
+                        {error}
+                    </div>
+                )}
+
+                <BackButton onClick={onBack} />
+            </div>
+        );
+    }
+
+    // ─── Supply Intelligence View ───
+    if (state === "supply") {
+        const supplyData = data.supplyData;
+        const recommendation = supplyData?.recommendation;
+        const hasResult = supplyData && !supplyData.needs_more_info && recommendation;
+
+        return (
+            <div className="w-full max-w-lg mx-auto space-y-6 animate-fadeIn">
+                <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
+                        <span className="text-lg">🧠</span>
+                    </div>
+                    <h3 className="text-xl font-black text-white">Supply Intelligence</h3>
+                </div>
+
+                {/* Conversational input */}
+                <div className="relative">
+                    <input
+                        type="text"
+                        placeholder='Try: "Where should I sell 100 kg tomato?"'
+                        value={supplyInput}
+                        onChange={(e) => setSupplyInput(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" && supplyInput.trim() && !loading && onSendSupplyQuery) {
+                                onSendSupplyQuery(supplyInput.trim());
+                                setSupplyInput("");
+                                setShowSupplyDetail(false);
+                            }
+                        }}
+                        disabled={loading}
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 pr-14 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/50 transition-all font-medium"
+                    />
+                    <button
+                        onClick={() => {
+                            if (supplyInput.trim() && !loading && onSendSupplyQuery) {
+                                onSendSupplyQuery(supplyInput.trim());
+                                setSupplyInput("");
+                                setShowSupplyDetail(false);
+                            }
+                        }}
+                        disabled={loading || !supplyInput.trim()}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-emerald-600 text-white w-9 h-9 rounded-xl flex items-center justify-center text-sm hover:bg-emerald-700 transition-colors disabled:opacity-30"
+                    >
+                        {loading ? (
+                            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        ) : (
+                            "→"
+                        )}
+                    </button>
+                </div>
+
+                {/* Quick suggestions */}
+                {!supplyData && (
+                    <div className="flex flex-wrap gap-2">
+                        {[
+                            "Where should I sell tomato?",
+                            "What is the price of wheat?",
+                            "Find best buyer for rice",
+                        ].map((suggestion) => (
+                            <button
+                                key={suggestion}
+                                onClick={() => {
+                                    if (onSendSupplyQuery) {
+                                        onSendSupplyQuery(suggestion);
+                                        setShowSupplyDetail(false);
+                                    }
+                                }}
+                                className="bg-white/5 border border-white/10 text-white/60 text-xs font-medium px-3 py-2 rounded-xl hover:bg-white/10 hover:text-white/80 transition-all"
+                            >
+                                {suggestion}
+                            </button>
+                        ))}
+                    </div>
+                )}
+
+                {/* Response */}
+                {supplyData?.response_text && (
+                    <div className="bg-white/5 rounded-2xl p-5 border border-white/10 space-y-3">
+                        <p className="text-white/90 text-sm leading-relaxed font-medium">
+                            {supplyData.response_text}
+                        </p>
+
+                        {/* Show detail toggle if available */}
+                        {supplyData.detail_text && (
+                            <button
+                                onClick={() => setShowSupplyDetail(!showSupplyDetail)}
+                                className="text-emerald-400 text-xs font-bold hover:text-emerald-300 transition-colors"
+                            >
+                                {showSupplyDetail ? "Hide details ▲" : "Want detailed analysis? ▼"}
+                            </button>
+                        )}
+
+                        {showSupplyDetail && supplyData.detail_text && (
+                            <div className="bg-white/5 rounded-xl p-4 border border-white/5">
+                                <p className="text-white/60 text-xs leading-relaxed">
+                                    {supplyData.detail_text}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Recommendation results */}
+                {hasResult && (
+                    <div className="space-y-3">
+                        {/* Price comparison */}
+                        {recommendation.price_comparison && (
+                            <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+                                <p className="text-[10px] font-bold text-white/40 uppercase tracking-wider mb-3">
+                                    Channel Comparison
+                                </p>
+                                <div className="space-y-2">
+                                    {[
+                                        { label: "Mandi", ...recommendation.price_comparison.mandi },
+                                        { label: "PACS", ...recommendation.price_comparison.pacs },
+                                        { label: recommendation.price_comparison.best_buyer?.name || "Buyer", price: recommendation.price_comparison.best_buyer?.price, score: recommendation.price_comparison.best_buyer?.score },
+                                    ].sort((a: any, b: any) => (b.score || 0) - (a.score || 0)).map((ch: any, i: number) => (
+                                        <div key={i} className="flex items-center justify-between">
+                                            <span className="text-white/60 text-sm truncate w-32">{ch.label}</span>
+                                            <div className="flex-grow mx-3 h-2 bg-white/10 rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full bg-emerald-500 rounded-full transition-all duration-500"
+                                                    style={{ width: `${Math.min(ch.score || 0, 100)}%` }}
+                                                />
+                                            </div>
+                                            <span className="text-white font-bold text-sm w-16 text-right">₹{ch.price}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Expected profit */}
+                        {recommendation.expected_profit && (
+                            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 flex items-center justify-between">
+                                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Expected Revenue</span>
+                                <span className="text-xl font-black text-emerald-400">₹{recommendation.expected_profit.toLocaleString("en-IN")}</span>
+                            </div>
+                        )}
+
+                        {/* Connect to buyer */}
+                        {recommendation.recommended_buyer && (
+                            <button
+                                onClick={() => {
+                                    setSupplyBuyerToast(true);
+                                    console.log("🔗 IVR Lead:", recommendation.recommended_buyer);
+                                    setTimeout(() => setSupplyBuyerToast(false), 4000);
+                                }}
+                                className="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 transition-all"
+                            >
+                                🔗 Connect to {recommendation.recommended_buyer.name}
+                            </button>
+                        )}
+
+                        {/* Buyer toast */}
+                        {supplyBuyerToast && (
+                            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-3 text-emerald-300 text-sm font-medium flex items-center gap-2">
+                                <span className="text-lg">✅</span>
+                                Connection request sent! The buyer will contact you shortly.
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Follow-up indicator */}
+                {supplyData?.needs_more_info && (
+                    <div className="flex items-center gap-2 text-amber-400 text-xs font-medium">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                        Waiting for your response...
                     </div>
                 )}
 

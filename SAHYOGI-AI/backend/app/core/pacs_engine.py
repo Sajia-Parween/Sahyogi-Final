@@ -256,3 +256,34 @@ def get_pacs_summary_for_voice(pacs_id: str = "pacs_001") -> str:
         "You can book a slot from the website dashboard."
     )
     return text
+
+
+def get_pacs_price(crop: str) -> dict:
+    """
+    Get simulated PACS procurement price for a crop.
+    PACS is treated as ONE selling option alongside mandi and private buyers.
+    Government-backed pricing is typically stable but slightly below market.
+    """
+    # Base PACS procurement prices (₹/kg)
+    pacs_base_prices = {
+        "tomato": 12, "wheat": 20, "rice": 22, "maize": 16,
+        "cotton": 30, "sugarcane": 10, "onion": 17, "potato": 12,
+        "mustard": 27, "soybean": 25, "groundnut": 28, "chilli": 22,
+    }
+
+    crop_lower = crop.lower().strip()
+    base = pacs_base_prices.get(crop_lower, 18)
+
+    # Small daily variance (±5%) — PACS prices are more stable than market
+    import random
+    variance = random.uniform(-0.05, 0.05)
+    price = round(base * (1 + variance), 2)
+
+    return {
+        "crop": crop,
+        "pacs_price_per_kg": price,
+        "procurement_type": "government_backed",
+        "payment_timeline": "7–14 days",
+        "reliability": "high",
+        "note": "PACS prices are government-regulated and more stable than open market.",
+    }
