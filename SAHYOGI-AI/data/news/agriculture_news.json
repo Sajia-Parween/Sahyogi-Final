@@ -1,0 +1,202 @@
+[
+  {
+    "id": "seed_001",
+    "title": "Government Raises Wheat MSP to ₹2,275/Quintal for Rabi 2024-25",
+    "summary": "The Cabinet Committee on Economic Affairs has approved an increase in Minimum Support Price for wheat to ₹2,275 per quintal, up by ₹150 from the previous year. Farmers in Punjab, Haryana, and Uttar Pradesh are expected to benefit the most as procurement begins in April 2025. The higher MSP aims to ensure remunerative prices and encourage production.",
+    "category": "msp",
+    "region": "all",
+    "source": "Ministry of Agriculture",
+    "published_date": "2025-01-15",
+    "image_url": null
+  },
+  {
+    "id": "seed_002",
+    "title": "IMD Issues Heavy Rainfall Alert for Odisha and Andhra Pradesh",
+    "summary": "The India Meteorological Department has issued a red alert for heavy to very heavy rainfall in coastal Odisha and northern Andhra Pradesh for the next 72 hours. Farmers in Sambalpur, Bargarh, and Jharsuguda districts are advised to harvest mature crops immediately and secure stored grain. NDRF teams have been deployed to low-lying agricultural areas.",
+    "category": "weather",
+    "region": "Odisha",
+    "source": "IMD Bhubaneswar",
+    "published_date": "2025-01-10",
+    "image_url": null
+  },
+  {
+    "id": "seed_003",
+    "title": "PM-KISAN 18th Installment Released: ₹2,000 Credited to 9.5 Crore Farmers",
+    "summary": "Prime Minister Narendra Modi has released the 18th installment of PM-KISAN Samman Nidhi, transferring ₹2,000 directly to bank accounts of 9.5 crore eligible farmer families across India. Farmers who have not received the payment should check their eKYC status on pmkisan.gov.in. The next installment is expected in April 2025.",
+    "category": "scheme",
+    "region": "all",
+    "source": "PM-KISAN Portal",
+    "published_date": "2025-01-08",
+    "image_url": null
+  },
+  {
+    "id": "seed_004",
+    "title": "Paddy Prices Surge at Sambalpur Mandi: ₹2,450/Quintal",
+    "summary": "Paddy prices at Sambalpur mandi have risen sharply to ₹2,450 per quintal, surpassing the MSP of ₹2,300 by 6.5%. High demand from rice mills and reduced supply due to late rains are driving the price increase. Farmers holding stocks are advised by agri experts to sell within the next 10 days before the new arrivals push prices down.",
+    "category": "market",
+    "region": "Odisha",
+    "source": "Sambalpur APMC",
+    "published_date": "2025-01-12",
+    "image_url": null
+  },
+  {
+    "id": "seed_005",
+    "title": "Yellow Rust Alert: ICAR Warns Wheat Farmers in Punjab and Haryana",
+    "summary": "ICAR-IIWBR has issued an urgent pest advisory warning of yellow rust outbreak in wheat-growing districts of Punjab and Haryana following prolonged foggy weather. Farmers should scout their fields immediately and spray Propiconazole 25EC at 1ml per liter water if yellow stripes are spotted on leaves. The disease can cause up to 50% yield loss if not controlled within 7 days.",
+    "category": "alert",
+    "region": "Punjab",
+    "source": "ICAR-IIWBR",
+    "published_date": "2025-01-14",
+    "image_url": null
+  },
+  {
+    "id": "seed_006",
+    "title": "Kisan Credit Card: Government Extends Zero-Interest Loan Scheme Till March 2025",
+    "summary": "The government has extended the interest subvention scheme for Kisan Credit Card holders, allowing farmers to avail short-term crop loans up to ₹3 lakh at 4% interest rate till March 31, 2025. Eligible farmers must repay within the crop season to claim the 3% interest rebate, effectively bringing interest cost to just 4%. Over 7 crore active KCC accounts exist across India.",
+    "category": "scheme",
+    "region": "all",
+    "source": "NABARD",
+    "published_date": "2025-01-06",
+    "image_url": null
+  },
+  {
+    "id": "seed_007",
+    "title": "Cotton Prices Fall to ₹6,400/Quintal in Vidarbha Mandis",
+    "summary": "Cotton prices in Vidarbha's major mandis including Nagpur, Amravati, and Yavatmal have dropped to ₹6,400 per quintal, below the MSP of ₹6,620 set by the government. Excess supply and lower global demand are cited as primary reasons. Farmers are advised to utilize Warehousing Corporation storage facilities and avail pledge loans rather than distress-selling.",
+    "category": "market",
+    "region": "Maharashtra",
+    "source": "CACP Market Intelligence",
+    "published_date": "2025-01-11",
+    "image_url": null
+  },
+  {
+    "id": "seed_008",
+    "title": "Cyclone Michaung Warning: Coastal AP Farmers Should Harvest Crops Immediately",
+    "summary": "A deep depression in the Bay of Bengal is likely to intensify into Cyclone Michaung within 24 hours, with landfall predicted near Nellore district in Andhra Pradesh. Farmers in Krishna, Guntur, and Prakasam districts must harvest any standing crops immediately and move livestock to higher ground. Crop insurance claims under PMFBY should be filed within 72 hours of damage.",
+    "category": "alert",
+    "region": "Andhra Pradesh",
+    "source": "IMD Hyderabad",
+    "published_date": "2025-01-09",
+    "image_url": null
+  },
+  {
+    "id": "seed_009",
+    "title": "Paddy MSP for Kharif 2024-25 Fixed at ₹2,300/Quintal — Record Hike",
+    "summary": "The government has approved a record hike in paddy MSP for Kharif 2024-25, setting the price at ₹2,300 per quintal for common grade and ₹2,320 for Grade A paddy. This represents an increase of ₹143 over last year, the highest ever absolute increase. State governments in Odisha, West Bengal, and Chhattisgarh have begun procurement operations through FCI and NAFED.",
+    "category": "msp",
+    "region": "all",
+    "source": "CCEA",
+    "published_date": "2025-01-02",
+    "image_url": null
+  },
+  {
+    "id": "seed_010",
+    "title": "Soil Health Card 3.0 Launched: Free Testing and Nano-Urea Recommendations",
+    "summary": "The Department of Agriculture has launched Soil Health Card Version 3.0, which now includes recommendations for Nano-Urea and Nano-DAP in addition to traditional NPK advice. Farmers can register at their nearest Krishi Vigyan Kendra for free soil testing. The new system uses AI-based advisory and provides location-specific fertilizer dosage recommendations in regional languages.",
+    "category": "scheme",
+    "region": "all",
+    "source": "Department of Agriculture",
+    "published_date": "2025-01-05",
+    "image_url": null
+  },
+  {
+    "id": "seed_011",
+    "title": "Wheat Prices at Ludhiana Mandi Cross ₹2,500 — Farmers Advised to Hold Stock",
+    "summary": "Wheat arrivals at Ludhiana grain market have surged to 45,000 quintals per day with prices touching ₹2,500 per quintal, significantly above the MSP of ₹2,275. Market analysts predict prices may further rise to ₹2,600 by February due to lower global production estimates. Punjab Agricultural University experts advise farmers with adequate storage to hold stocks for 30-45 more days.",
+    "category": "market",
+    "region": "Punjab",
+    "source": "Punjab Mandi Board",
+    "published_date": "2025-01-13",
+    "image_url": null
+  },
+  {
+    "id": "seed_012",
+    "title": "PMFBY: Odisha Farmers Must Enroll Before January 31 Deadline for Rabi Crops",
+    "summary": "The deadline for enrolling rabi crops under Pradhan Mantri Fasal Bima Yojana in Odisha is January 31, 2025. Farmers growing wheat, pulses, oilseeds, and vegetables can insure their crops by paying a premium of just 1.5% of the sum insured at their nearest bank branch or Common Service Centre. Claims are settled within 45 days of damage assessment.",
+    "category": "scheme",
+    "region": "Odisha",
+    "source": "Odisha Agriculture Department",
+    "published_date": "2025-01-07",
+    "image_url": null
+  },
+  {
+    "id": "seed_013",
+    "title": "Tomato Prices Crash to ₹8/kg in Nashik — Farmers Demand Government Intervention",
+    "summary": "Tomato prices at Nashik's Lasalgaon mandi have crashed to ₹8 per kilogram due to bumper production and lack of cold storage infrastructure. Angry farmers have started dumping tomatoes on highways in protest, demanding a minimum support price of at least ₹25/kg. The Maharashtra government has announced purchase of 50,000 MT through NAFED at ₹12/kg for processing.",
+    "category": "market",
+    "region": "Maharashtra",
+    "source": "Lasalgaon APMC",
+    "published_date": "2025-01-03",
+    "image_url": null
+  },
+  {
+    "id": "seed_014",
+    "title": "Groundnut MSP Raised to ₹6,377/Quintal — Gujarat and Rajasthan Farmers Benefit",
+    "summary": "The government has increased the MSP for groundnut (in shell) to ₹6,377 per quintal for Kharif 2024-25, up by ₹259 from last year. Major groundnut-producing states Gujarat, Rajasthan, and Andhra Pradesh will benefit from enhanced procurement. NAFED has been directed to ensure prompt payment within 3 days of procurement at all mandis.",
+    "category": "msp",
+    "region": "Gujarat",
+    "source": "Ministry of Agriculture",
+    "published_date": "2024-12-30",
+    "image_url": null
+  },
+  {
+    "id": "seed_015",
+    "title": "Fall Armyworm Attack: Maize Farmers in Karnataka Alert Issued",
+    "summary": "ICAR-IIMR has issued an emergency advisory warning of severe Fall Armyworm (FAW) attack on maize crops in Hassan, Haveri, and Dharwad districts of Karnataka. The pest can destroy up to 80% of maize crop if not controlled immediately. Farmers should apply Emamectin Benzoate 5SG (0.4g/litre) or Spinetoram 11.7SC (0.5ml/litre) in the early morning or evening hours.",
+    "category": "alert",
+    "region": "Karnataka",
+    "source": "ICAR-IIMR",
+    "published_date": "2025-01-04",
+    "image_url": null
+  },
+  {
+    "id": "seed_016",
+    "title": "eNAM Platform Now Live in 1,361 Mandis: Online Trading Gets Boost",
+    "summary": "The National Agriculture Market (eNAM) platform has been expanded to 1,361 mandis across 23 states, enabling farmers to sell their produce online with transparent bidding. Farmers in Rajasthan, Madhya Pradesh, and Uttar Pradesh can now get price discovery from buyers across state borders. Registration is free at enam.gov.in with a 2% service charge on completed transactions.",
+    "category": "scheme",
+    "region": "all",
+    "source": "SFAC-eNAM",
+    "published_date": "2025-01-01",
+    "image_url": null
+  },
+  {
+    "id": "seed_017",
+    "title": "Cold Wave Forecast for North India: Protect Wheat and Mustard Crops",
+    "summary": "IMD has forecast a severe cold wave with temperatures dropping to 2-4°C in Rajasthan, Haryana, and western UP from January 18-22. Wheat crops in the tillering stage are susceptible to frost injury. Farmers should apply light protective irrigation (a fog-like irrigation using sprinklers or standing water) overnight to prevent frost damage. Mustard flowers can abort at below 5°C.",
+    "category": "weather",
+    "region": "Rajasthan",
+    "source": "IMD New Delhi",
+    "published_date": "2025-01-16",
+    "image_url": null
+  },
+  {
+    "id": "seed_018",
+    "title": "Maize MSP Raised to ₹2,225/Quintal — Third Consecutive Year of Increase",
+    "summary": "The government has announced an MSP of ₹2,225 per quintal for maize in Kharif 2024-25, an increase of ₹135 over the previous season. Maize is increasingly in demand for poultry feed, starch manufacturing, and ethanol production. Bihar, Karnataka, and Andhra Pradesh are the top maize-producing states expected to benefit from enhanced procurement operations.",
+    "category": "msp",
+    "region": "Bihar",
+    "source": "CCEA",
+    "published_date": "2024-12-28",
+    "image_url": null
+  },
+  {
+    "id": "seed_019",
+    "title": "Paramparagat Krishi Vikas Yojana: ₹50,000/Hectare for Organic Farming",
+    "summary": "Under the Paramparagat Krishi Vikas Yojana (PKVY), the government is providing financial assistance of ₹50,000 per hectare over 3 years to farmers transitioning to certified organic farming. Farmer Producer Organizations (FPOs) can apply collectively for cluster-based certification. Organic produce fetches 20-30% premium at eNAM and dedicated organic markets in major cities.",
+    "category": "scheme",
+    "region": "all",
+    "source": "Ministry of Agriculture (PKVY)",
+    "published_date": "2024-12-25",
+    "image_url": null
+  },
+  {
+    "id": "seed_020",
+    "title": "Bargarh Mandi Paddy Price Dips Below MSP — Odisha FCI Steps Up Procurement",
+    "summary": "Paddy prices at Bargarh district mandi in Odisha have dipped to ₹2,180 per quintal, below the MSP of ₹2,300. In response, the Food Corporation of India has opened 12 additional procurement centres in Bargarh and Sambalpur districts with round-the-clock operations. Farmers must bring original land record (patta) and Aadhaar card for procurement. Payment is made directly to linked bank account within 3 working days.",
+    "category": "market",
+    "region": "Odisha",
+    "source": "FCI Odisha",
+    "published_date": "2025-01-15",
+    "image_url": null
+  }
+]

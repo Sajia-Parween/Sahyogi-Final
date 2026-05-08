@@ -14,6 +14,7 @@ from app.api.v1 import disease
 from app.api.v1 import calendar
 from app.api.v1 import market_prices
 from app.api.v1 import community
+from app.api.v1 import news
 from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(
@@ -54,3 +55,4 @@ app.include_router(supply.router, prefix="/api/v1/supply", tags=["Supply Intelli
 app.include_router(ivr.router, prefix="/api/v1/ivr-intelligence", tags=["IVR Intelligence"])
 app.include_router(buyer.router, prefix="/api/v1/buyer", tags=["Buyer"])
 app.include_router(community.router, prefix="/api/v1/community", tags=["Community"])
+app.include_router(news.router, prefix="/api/v1/news", tags=["News"])

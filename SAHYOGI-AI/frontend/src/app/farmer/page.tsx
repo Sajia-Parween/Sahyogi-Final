@@ -17,6 +17,7 @@ import FarmerRequestsCard from "./Dashboard/FarmerRequestsCard";
 import SmartAlertsCard from "./Dashboard/SmartAlertsCard";
 import CommunityCard from "./Dashboard/CommunityCard";
 import LoanInsuranceCard from "./Dashboard/LoanInsuranceCard";
+import NewsCard from "./Dashboard/NewsCard";
 
 export default function FarmerPage() {
   return (
@@ -91,6 +92,9 @@ export default function FarmerPage() {
 
           {/* ★ NEW: Loan & Insurance Help */}
           <LoanInsuranceCard />
+
+          {/* ★ NEW: Agri News Widget */}
+          <NewsCard />
 
           <VoiceAssistant />
           <SellCard />

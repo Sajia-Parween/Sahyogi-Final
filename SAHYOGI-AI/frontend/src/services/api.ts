@@ -221,4 +221,81 @@ export async function discoverFarmers() {
   return res.data;
 }
 
+// ─── News APIs ───
+export async function getNews(
+  category?: string,
+  region?: string,
+  search?: string,
+  page: number = 1,
+  perPage: number = 10
+) {
+  const params: Record<string, any> = { page, per_page: perPage };
+  if (category && category !== "all") params.category = category;
+  if (region && region !== "all") params.region = region;
+  if (search) params.search = search;
+  const res = await api.get("/api/v1/news/", { params });
+  return res.data;
+}
+
+export async function refreshNews() {
+  const res = await api.post("/api/v1/news/refresh");
+  return res.data;
+}
+
+export async function getFarmerNews(phone: string, language: string = "en") {
+  const res = await api.get(`/api/v1/news/${phone}`, { params: { language } });
+  return res.data;
+}
+
+export async function getArticleSummary(articleId: string, language: string = "en") {
+  const res = await api.get(`/api/v1/news/article/${articleId}/summary`, {
+    params: { language },
+  });
+  return res.data;
+}
+
+export async function getArticleAudio(articleId: string, language: string = "en") {
+  const res = await api.get(`/api/v1/news/article/${articleId}/audio`, {
+    params: { language },
+  });
+  return res.data;
+}
+
+export async function submitNewsReport(
+  phone: string,
+  title: string,
+  description: string,
+  category: string,
+  language: string = "en"
+) {
+  const res = await api.post("/api/v1/news/report", {
+    phone,
+    title,
+    description,
+    category,
+    language,
+  });
+  return res.data;
+}
+
+export async function getCommunityReports(region?: string) {
+  const params: Record<string, any> = {};
+  if (region && region !== "all") params.region = region;
+  const res = await api.get("/api/v1/news/reports/community", { params });
+  return res.data;
+}
+
+export async function bookmarkArticle(phone: string, articleId: string) {
+  const res = await api.post("/api/v1/news/bookmarks", {
+    phone,
+    article_id: articleId,
+  });
+  return res.data;
+}
+
+export async function getBookmarks(phone: string) {
+  const res = await api.get(`/api/v1/news/bookmarks/${phone}`);
+  return res.data;
+}
+
 export default api;
